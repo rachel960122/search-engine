@@ -165,13 +165,13 @@ When you check out the repository for this lab, you should find a file structure
 
 In the subdirectory `javacs-lab12/src/com/flatironschool/javacs` you'll find the source files for this lab:
 
-    *  `WikiSearch.java`, which defines an object that contains search results and performs operations on them.
+*  `WikiSearch.java`, which defines an object that contains search results and performs operations on them.
 
-    *  `WikiSearchTest.java`, which contains test code for `WikiSearch`.
+*  `WikiSearchTest.java`, which contains test code for `WikiSearch`.
     
-    *  `Card.java`, which demonstrates how to use the `sort` method in `java.util.Collections`.
+*  `Card.java`, which demonstrates how to use the `sort` method in `java.util.Collections`.
     
-You will also find several of the helper classes we've used in previous labs.
+You will also find some of the helper classes we've used in previous labs.
 
 Here's the beginning of the `WikiSearch` class definition:
 
