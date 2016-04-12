@@ -1,6 +1,12 @@
 tags:
-  - a tag
+  - Web index
+  - Information retrieval
+  - Relevance score
+  - Sorting
+  - Comparable interface
+  - Comparator interface
+  - Anonymous class
 languages:
-  - a language
+  - Java
 resources: 
-  - 0
+  - 3
