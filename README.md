@@ -347,6 +347,8 @@ If you get a basic version of this lab working, you might want to work on these 
 
 * [Read about TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) and implement it.  You might have to modify `JavaIndex` to compute document frequencies; that is, the total number of times each term appears on all pages in the index.
 
+* For queries with more than one search term, the total relevance for each page is currently the sum of the relevance for each term.  Think about when this simple version might not work well, and try out some alternatives.
+
 * Build a user interface that allows users to enter queries with boolean operators.  Parse the queries, generate the results, then sort them by relevance and display the highest-scoring URLs.  Consider generating "snippets" that show where the search terms appeared on the page.  If you want to make a Web application for your user interface, we recommend [Heroku](https://devcenter.heroku.com/articles/getting-started-with-java) as simple options for developing and deploying Web applications using Java.
 
 
