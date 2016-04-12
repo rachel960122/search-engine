@@ -132,29 +132,29 @@ In this lab, we'll focus on steps 3 and 4.  We've already build a simple version
 
 Most search engines can perform "boolean searches", which means you can combine the results from multiple search terms using boolean logic.  For example:
 
-*  The search "Java AND programming" might return only pages that contain both search terms: "Java" and "programming".
+*  The search "java AND programming" might return only pages that contain both search terms: "java" and "programming".
 
-*  "Java OR programming" might return pages that contain either term but not necessarily both.
+*  "java OR programming" might return pages that contain either term but not necessarily both.
 
-*  "Java -Indonesia" might return pages that contain "Java" and do not contain "Indonesia".
+*  "java -indonesia" might return pages that contain "java" and do not contain "indonesia".
 
 Expressions like these that contain search terms and operators are called "queries".
 
 When applied to search results, the boolean operators `AND`, `OR`, and `-` correspond to the set operations `intersection`, `union`, and `difference`.  For example, suppose
 
-*  `s1` is the set of pages containing "Java",
+*  `s1` is the set of pages containing "java",
 
 *  `s2` is the set of pages containing "programming", and
 
-*  `s3` is the set of pages containing "Indonesia".
+*  `s3` is the set of pages containing "indonesia".
 
 In that case:
 
-*  The intersection of `s1` and `s2` is the set of pages containing "Java" AND "programming".
+*  The intersection of `s1` and `s2` is the set of pages containing "java" AND "programming".
 
-*  The union of `s1` and `s2` is the set of pages containing "Java" OR "programming".
+*  The union of `s1` and `s2` is the set of pages containing "java" OR "programming".
 
-*  The difference of `s1` and `s2` is the set of pages containing "Java" and not "Indonesia".
+*  The difference of `s1` and `s2` is the set of pages containing "java" and not "indonesia".
 
 In the next section you will write method to implement these operations.
 
@@ -214,11 +214,11 @@ You can run `WikiSearchTest` without using Jedis because it doesn't depend on th
 
 Run `ant JedisMaker` to make sure it is configured to connect to your Redis server.  Then run `WikiSearch`, which prints results from three queries:
 
-*  "Java"
+*  "java"
 
 *  "programming"
 
-*  "Java AND programming
+*  "java AND programming
 
 Initially the results will be in no particular order, because `WikiSearch.sort` is incomplete.
 
