@@ -1,6 +1,6 @@
 # cs-application-retrieval-lab
 
-## Learning goals 
+## Learning goals
 
 1.  Analyze the performance of Web indexing algorithms.
 2.  Use boolean operators to generate search results for multiple search terms.
@@ -20,13 +20,13 @@ First, let's go over our solution to the previous lab.  We provided an outline o
 public class WikiCrawler {
 	// keeps track of where we started
 	private final String source;
-	
+
 	// the index where the results go
 	private JedisIndex index;
-	
+
 	// queue of URLs to be indexed
 	private Queue<String> queue = new LinkedList<String>();
-	
+
 	// fetcher used to get pages from Wikipedia
 	final static WikiFetcher wf = new WikiFetcher();
 }
@@ -50,7 +50,7 @@ Here's our implementation of `crawl`:
 			System.out.println("Already indexed.");
 			return null;
 		}
-		
+
 		Elements paragraphs;
 		if (testing) {
 			paragraphs = wf.readWikipedia(url);
@@ -58,7 +58,7 @@ Here's our implementation of `crawl`:
 			paragraphs = wf.fetchWikipedia(url);
 		}
 		index.indexPage(url, paragraphs);
-		queueInternalLinks(paragraphs);		
+		queueInternalLinks(paragraphs);
 		return url;
 	}
 ```
@@ -96,16 +96,16 @@ The first version just loops through the paragraphs.  The second version does th
 		Elements elts = paragraph.select("a[href]");
 		for (Element elt: elts) {
 			String relURL = elt.attr("href");
-			
+
 			if (relURL.startsWith("/wiki/")) {
 				String absURL = elt.attr("abs:href");
 				queue.offer(absURL);
 			}
 		}
-	}	
+	}
 ```
 
-To determine whether a link is "internal", we check whether the URL starts with "/wiki/".  This might include some pages we don't want to index, like meta-pages about Wikipedia.  And it might exclude some pages we want, like links to pages in non-English languages.  But we kept it simple.
+To determine whether a link is "internal," we check whether the URL starts with "/wiki/".  This might include some pages we don't want to index, like meta-pages about Wikipedia.  And it might exclude some pages we want, like links to pages in non-English languages.  But we kept it simple.
 
 That's all there is to it.  This lab didn't have a lot of new material; it was mostly a chance to bring the pieces together.
 
@@ -168,23 +168,23 @@ In the subdirectory `javacs-lab12/src/com/flatironschool/javacs` you'll find the
 *  `WikiSearch.java`, which defines an object that contains search results and performs operations on them.
 
 *  `WikiSearchTest.java`, which contains test code for `WikiSearch`.
-    
+
 *  `Card.java`, which demonstrates how to use the `sort` method in `java.util.Collections`.
-    
+
 You will also find some of the helper classes we've used in previous labs.
 
 Here's the beginning of the `WikiSearch` class definition:
 
 ```java
 public class WikiSearch {
-	
+
 	// map from URLs that contain the term(s) to relevance score
 	private Map<String, Integer> map;
 
 	public WikiSearch(Map<String, Integer> map) {
 		this.map = map;
 	}
-	
+
 	public Integer getRelevance(String url) {
 		Integer relevance = map.get(url);
 		return relevance==null ? 0: relevance;
@@ -228,7 +228,7 @@ Fill in the body of `sort` so the results are returned in increasing order of re
 
 * The two-parameter version takes a list of any object type and a `Comparator`, which is an object that provides a `compare` method that compares elements.
 
-If you are not familiar with the `Comparable` and `Comparator` interfaces, we explain them in the next section.  
+If you are not familiar with the `Comparable` and `Comparator` interfaces, we explain them in the next section.
 
 
 ## `Comparable` and `Comparator`
@@ -307,7 +307,7 @@ But it is possible to impose a different ordering by providing a `Comparator` ob
                 }
                 int rank1 = getRankAceHigh(card1);
                 int rank2 = getRankAceHigh(card2);
-                
+
                 if (rank1 < rank2) {
                     return -1;
                 }
