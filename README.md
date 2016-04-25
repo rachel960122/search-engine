@@ -210,7 +210,7 @@ Run `ant build` to compile the source files, then run `ant test` to run `WikiSea
 
 In `WikiSearch.java`, fill in the bodies of `and`, `or`, and `minus` so that the relevant tests pass.  You don't have to worry about `testSort` yet.
 
-You can run `WikiSearchTest` without using Jedis because it doesn't depend on the index in your Redis database.  But if you want to run a query against your index, you have to provide a file with information about your Redis server.  If you did this in the previous lab, you can just copy it over.  Otherwise you can find instructions in CAN WE LINK TO PREVIOUS LAB???.
+You can run `WikiSearchTest` without using Jedis because it doesn't depend on the index in your Redis database.  But if you want to run a query against your index, you have to provide a file with information about your Redis server.  If you did this in the previous lab, you can just copy it over.  Otherwise you can find instructions in [cs-application-backing-with-redis-lab](ADD THIS LINK AFTER DEPLOYMENT).
 
 Run `ant JedisMaker` to make sure it is configured to connect to your Redis server.  Then run `WikiSearch`, which prints results from three queries:
 
