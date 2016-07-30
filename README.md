@@ -345,7 +345,7 @@ The code in this section is in `Card.java` if you want to experiment with it.  A
 
 If you get a basic version of this lab working, you might want to work on these optional exercises:
 
-* [Read about TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) and implement it.  You might have to modify `JavaIndex` to compute document frequencies; that is, the total number of times each term appears on all pages in the index.
+* [Read about TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) and implement it.  You might have to modify `JedisIndex` to compute document frequencies; that is, the total number of times each term appears on all pages in the index.
 
 * For queries with more than one search term, the total relevance for each page is currently the sum of the relevance for each term.  Think about when this simple version might not work well, and try out some alternatives.
 
@@ -360,3 +360,5 @@ If you get a basic version of this lab working, you might want to work on these 
 *  [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf)
 
 *  [Anonymous classes](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html)
+
+<p class='util--hide'>View <a href='https://learn.co/lessons/cs-application-retrieval-lab'>Retrieval Lab</a> on Learn.co and start learning to code for free.</p>
