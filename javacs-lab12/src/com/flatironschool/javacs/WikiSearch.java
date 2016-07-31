@@ -149,8 +149,6 @@ public class WikiSearch {
 		Jedis jedis = JedisMaker.make();
 		JedisIndex index = new JedisIndex(jedis); 
 
-		System.out.println("Please enter you search terms: ");
-		
 		// search for the first term
 		String term1 = "java";
 		System.out.println("Query: " + term1);
