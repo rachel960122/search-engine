@@ -16,6 +16,7 @@ public class Crawler {
 	private JedisIndex index;
 	private Queue<String> queue = new LinkedList<String>();
 	final static WikiFetcher fetcher = new WikiFetcher();
+	private int max = 100;
 	private volatile int count = 0;
 
 	public Crawler(String source, JedisIndex index) {
@@ -34,7 +35,11 @@ public class Crawler {
 		}
 
 		String url = null;
-		while (count < 25) {
+		while (count < max) {
+			// take a url of the list of seed urls
+			if (queue.isEmpty()) {
+				queue.offer(index.dequeueSeedUrl());
+			}
 			url =  queue.poll();
 			if (index.isIndexed(url)) {
 				System.out.println("Already indexed " + url);
@@ -44,6 +49,10 @@ public class Crawler {
 				index.indexPage(url, paragraphs);
 				queueInternalLinks(paragraphs);
 				count++;
+				// save the next url to the list of seed urls
+				if (count == max) {
+					index.enqueueSeedUrl(queue.peek());
+				}
 			}
 		}
 		return url;
@@ -74,7 +83,6 @@ public class Crawler {
 	public static void main(String[] args) throws IOException {
 		Jedis jedis = JedisMaker.make();
 		JedisIndex index = new JedisIndex(jedis);
-		index.deleteAllKeys(); // TODO: remove this in production
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		final Crawler crawler = new Crawler(source, index);
 

@@ -92,7 +92,7 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch minus(WikiSearch that) {
-    Map<String, Integer> difference = new HashMap<String, Integer>(map);
+  	Map<String, Integer> difference = new HashMap<String, Integer>(map);
 		for (String term: that.map.keySet()) {
 			difference.remove(term);
 		}
