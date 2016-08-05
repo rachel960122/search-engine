@@ -1,6 +1,7 @@
 package com.flatironschool.javacs;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -8,6 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 
 import org.jsoup.select.Elements;
 
@@ -47,6 +57,47 @@ public class JedisIndex {
 	 */
 	private String termCounterKey(String url) {
 		return "TermCounter:" + url;
+	}
+
+	public void enqueueSeedUrl(String url) {
+		jedis.rpush("SeedUrls", url);
+	}
+
+	public String dequeueSeedUrl() {
+		return jedis.lpop("SeedUrls");
+	}
+
+	public void addSeedUrls() {
+		String slash = File.separator;
+		String filename = "resources" + slash + "seed_urls.txt";
+		URL fileURL = Crawler.class.getClassLoader().getResource(filename);
+		String filepath;
+		try {
+			filepath = URLDecoder.decode(fileURL.getFile(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(filepath));
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found: " + filename);
+			return;
+		}
+
+		while (true) {
+			String line;
+			try {
+				line =  br.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+				line = null;
+			}
+			if (line == null) break;
+			jedis.rpush("SeedUrls", line.trim());
+		}
 	}
 
 	/**
