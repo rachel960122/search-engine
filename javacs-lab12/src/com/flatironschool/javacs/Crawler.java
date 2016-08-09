@@ -16,7 +16,7 @@ public class Crawler {
 	private JedisIndex index;
 	private Queue<String> queue = new LinkedList<String>();
 	final static WikiFetcher fetcher = new WikiFetcher();
-	private int max = 100;
+	private int max = 500;
 	private volatile int count = 0;
 
 	public Crawler(String source, JedisIndex index) {
@@ -83,6 +83,7 @@ public class Crawler {
 	public static void main(String[] args) throws IOException {
 		Jedis jedis = JedisMaker.make();
 		JedisIndex index = new JedisIndex(jedis);
+		index.addSeedUrls();
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		final Crawler crawler = new Crawler(source, index);
 
