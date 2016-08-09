@@ -77,18 +77,30 @@ public class WikiSearch {
 			//map.put(url, 0.0);
 		}
 
-		for (String word: compulsory){
-			Set<String> urlSet = searchTerm(word);
-			newUrls.retainAll(urlSet);
+		if (compulsory != null){
+			for (String word: compulsory){
+				Set<String> urlSet = searchTerm(word);
+				newUrls.retainAll(urlSet);
+			}
 		}
 
-		for (String word: minus){
-			Set<String> urlSet = searchTerm(word);
-			newUrls.removeAll(urlSet);
+		if (minus != null){
+			for (String word: minus){
+				Set<String> urlSet = searchTerm(word);
+				newUrls.removeAll(urlSet);
+			}
 		}
 
 		if (sites != null) {
-			newUrls.retainAll(sites);
+			Set<String> urlSet = new HashSet<String>();
+			for (String url: newUrls){
+				for (String site: sites){
+					if (url.contains(site)){
+						urlSet.add(url);
+					}
+				}
+			}
+			newUrls.retainAll(urlSet);
 		}
 
 		for (String url: newUrls){
@@ -156,6 +168,8 @@ public class WikiSearch {
 		test.get("a").add("programming");
 		test.put("m", new ArrayList<String>());
 		test.get("m").add("electronic");
+		test.put("s", new ArrayList<String>());
+		test.get("s").add("programming");
 
 		WikiSearch searcher = new WikiSearch();
 		List<String> result = searcher.search(test);
