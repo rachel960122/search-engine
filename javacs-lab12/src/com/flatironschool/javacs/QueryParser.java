@@ -32,7 +32,6 @@ public class QueryParser {
 		stoplist = new HashSet<String>();
 		createStoplist();
 		op = new OptionParser();
-		op.accepts("a").withRequiredArg().ofType(String.class);
 		map = new HashMap<String, List<String>>();
 	}
 
@@ -70,7 +69,7 @@ public class QueryParser {
 		}
 	}
 
-	public void processArgument(String argument) {
+	public Map<String, List<String>> processArgument(String argument) {
 		String[] words = argument.trim().split(" ");
 		List<String> arguments = new ArrayList<String>();
 		for (String word : words) {
@@ -79,6 +78,7 @@ public class QueryParser {
 			}
 		}
 		processArguments(arguments);
+		return map;
 	}
 
 	public List<String> getValues(char option) {
@@ -122,10 +122,10 @@ public class QueryParser {
 
 	public static void main(String[] args) {
 		QueryParser qp = new QueryParser();
-		qp.processArgument("Java -a programming -a tutorials google -m yay -s google.com");
-		System.out.println(qp.getValues('a'));
-		System.out.println(qp.getValues('m'));
-		System.out.println(qp.getValues('s'));
-		System.out.println(qp.getValues('o'));
+		Map<String, List<String>> newMap = qp.processArgument("Java -a programming -a tutorials google -m yay -s google.com");
+		System.out.println("a: " + newMap.get("a"));
+		System.out.println("m: " + newMap.get("m"));
+		System.out.println("s: " + newMap.get("s"));
+		System.out.println("o : " + newMap.get("o"));
 	}
 }
