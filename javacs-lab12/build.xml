@@ -384,6 +384,11 @@
             <classpath refid="JavaCS.classpath"/>
         </java>
     </target>
+    <target name="AL">
+        <java classname="com.flatironschool.javacs.AL" failonerror="true" fork="yes">
+            <classpath refid="JavaCS.classpath"/>
+        </java>
+    </target>
     <target name="JedisTermCounterTest">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
