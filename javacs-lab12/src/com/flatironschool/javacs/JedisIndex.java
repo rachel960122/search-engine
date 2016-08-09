@@ -50,6 +50,10 @@ public class JedisIndex {
 		return "URLSet:" + term;
 	}
 	
+	private String urlTotalCount(String url){
+		return "URLTotalCount:" + url;
+	}
+
 	/**
 	 * Returns the Redis key for a URL's TermCounter.
 	 * 
@@ -148,6 +152,38 @@ public class JedisIndex {
 		return map;
 	}
 
+	public Map<String, Double> getRelevance(String term){
+		Double tf, idf;
+		Map<String, Double> map = new HashMap<String, Double>();
+		Set<String> urls = getURLs(term);
+		int docTerm = urls.size();
+		int numDocs = termCounterKeys().size();
+		if (docTerm == 0) return map;
+		for (String url: urls){
+			Integer totalCount = jedis.hgetAll(termCounterKey(url)).size();
+			Integer count = getCount(url, term);
+			tf = (count/ (totalCount + 0.0));
+			idf = Math.log(1+ numDocs/ (docTerm + 0.0));
+			map.put(url, new Double(tf * idf));
+		}
+		return map;
+	}
+
+	public Double tfidf(String term, String url){
+		Double tf, idf;
+		Set<String> urls = getURLs(term);
+		int docTerm = urls.size();
+		int numDocs = termCounterKeys().size();
+		if (docTerm == 0) return null;
+		
+		Integer totalCount = jedis.hgetAll(termCounterKey(url)).size();
+		Integer count = getCount(url, term);
+		tf = (count/ (totalCount + 0.0));
+		idf = Math.log(1+ numDocs/ (docTerm + 0.0));
+		
+		return new Double(tf * idf);
+	}
+
 	/**
 	 * Looks up a term and returns a map from URL to count.
 	 * 
@@ -223,6 +259,8 @@ public class JedisIndex {
 		
 		// if this page has already been indexed; delete the old hash
 		t.del(hashname);
+
+		t.hset("Total Counts", urlTotalCount(url), tc.size()+"");
 
 		// for each term, add an entry in the termcounter and a new
 		// member of the index
