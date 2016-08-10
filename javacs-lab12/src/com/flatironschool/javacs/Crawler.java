@@ -12,24 +12,23 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisDataException;
 
 public class Crawler {
-	private final String source;
 	private JedisIndex index;
 	private Queue<String> queue = new LinkedList<String>();
 	final static WikiFetcher fetcher = new WikiFetcher();
-	private int max = 500;
+	private int max = 20000;
+	private static int threadNumber = 1;
 	private volatile int count = 0;
 
-	public Crawler(String source, JedisIndex index) {
-		this.source = source;
+	public Crawler(Queue<String> source, JedisIndex index) {
+		this.queue = source;
 		this.index = index;
-		queue.offer(source);
 	}
 
 	public int queueSize() {
 		return queue.size();
 	}
 
-	public synchronized String crawl() throws IOException {
+	public String crawl() throws IOException {
 		if (queue.isEmpty()) {
 			return null;
 		}
@@ -37,21 +36,25 @@ public class Crawler {
 		String url = null;
 		while (count < max) {
 			// take a url of the list of seed urls
-			if (queue.isEmpty()) {
-				queue.offer(index.dequeueSeedUrl());
+			synchronized(this) {
+				if (queue.isEmpty()) {
+					queue.offer(index.dequeueSeedUrl());
+				}
+				url =  queue.poll();
 			}
-			url =  queue.poll();
 			if (index.isIndexed(url)) {
 				System.out.println("Already indexed " + url);
 			} else {
 				System.out.println("Crawling " + url);
 				Elements paragraphs = fetcher.fetchWikipedia(url);
-				index.indexPage(url, paragraphs);
-				queueInternalLinks(paragraphs);
-				count++;
+				synchronized(this) {
+					index.indexPage(url, paragraphs);
+					queueInternalLinks(paragraphs);
+					count++;
 				// save the next url to the list of seed urls
-				if (count == max) {
-					index.enqueueSeedUrl(queue.peek());
+					if (count == max) {
+						index.enqueueSeedUrl(queue.peek());
+					}
 				}
 			}
 		}
@@ -83,11 +86,10 @@ public class Crawler {
 	public static void main(String[] args) throws IOException {
 		Jedis jedis = JedisMaker.make();
 		JedisIndex index = new JedisIndex(jedis);
-		index.addSeedUrls();
-		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
+		Queue<String> source = index.addSeedUrls();
 		final Crawler crawler = new Crawler(source, index);
 
-		Thread[] t_array = new Thread[8];
+		Thread[] t_array = new Thread[threadNumber];
 
 		for (int i = 0; i < t_array.length; i++) {
 			t_array[i] = new Thread(new Crawl(crawler));

@@ -1,2 +1,1 @@
-https://en.wikipedia.org/wiki/Computing
-https://en.wikipedia.org/wiki/Docker_(software)
+https://en.wikipedia.org/wiki/Run-time_environment

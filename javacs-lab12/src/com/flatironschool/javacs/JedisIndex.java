@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
+import java.util.LinkedList;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -71,7 +73,8 @@ public class JedisIndex {
 		return jedis.lpop("SeedUrls");
 	}
 
-	public void addSeedUrls() {
+	public Queue<String> addSeedUrls() {
+		Queue<String> queue = new LinkedList<String>();
 		String slash = File.separator;
 		String filename = "resources" + slash + "seed_urls.txt";
 		URL fileURL = Crawler.class.getClassLoader().getResource(filename);
@@ -80,7 +83,7 @@ public class JedisIndex {
 			filepath = URLDecoder.decode(fileURL.getFile(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			return;
+			return new LinkedList<String>();
 		}
 
 		BufferedReader br;
@@ -88,7 +91,7 @@ public class JedisIndex {
 			br = new BufferedReader(new FileReader(filepath));
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found: " + filename);
-			return;
+			return new LinkedList<String>();
 		}
 
 		while (true) {
@@ -101,7 +104,9 @@ public class JedisIndex {
 			}
 			if (line == null) break;
 			jedis.rpush("SeedUrls", line.trim());
+			queue.offer(line.trim());
 		}
+		return queue;
 	}
 
 	/**
@@ -174,7 +179,7 @@ public class JedisIndex {
 		Set<String> urls = getURLs(term);
 		int docTerm = urls.size();
 		int numDocs = termCounterKeys().size();
-		if (docTerm == 0) return null;
+		if (docTerm == 0) return new Double(0);
 		
 		Integer totalCount = jedis.hgetAll(termCounterKey(url)).size();
 		Integer count = getCount(url, term);
@@ -225,6 +230,9 @@ public class JedisIndex {
 	public Integer getCount(String url, String term) {
 		String redisKey = termCounterKey(url);
 		String count = jedis.hget(redisKey, term);
+		if (count == null) {
+			return 0;
+		}
 		return new Integer(count);
 	}
 

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import redis.clients.jedis.Jedis;
  */
 public class WikiSearch {
 	
-	private Map<String, Double> map;
 	private JedisIndex index;
 
 	/**
@@ -32,7 +30,6 @@ public class WikiSearch {
 	public WikiSearch() throws IOException{
 		Jedis jedis = JedisMaker.make();
 		this.index = new JedisIndex(jedis); 
-		this.map = new HashMap<String, Double>();
 	}
 	
 	/**
@@ -70,6 +67,7 @@ public class WikiSearch {
 		
 		Set<String> urls = index.termCounterKeys();
 		Set<String> newUrls = new HashSet<String>();
+		//System.out.println(urls);
 
 		for (String url: urls){
 			url = url.substring(12);
@@ -77,21 +75,30 @@ public class WikiSearch {
 			//map.put(url, 0.0);
 		}
 
-		if (compulsory != null){
+				//System.out.println("URLs before compulsory: " + newUrls);
+
+
+		if (compulsory.size() != 0){
 			for (String word: compulsory){
 				Set<String> urlSet = searchTerm(word);
 				newUrls.retainAll(urlSet);
 			}
 		}
 
-		if (minus != null){
+						//System.out.println("URLs after compulsory: " + newUrls);
+
+
+		if (minus.size() != 0){
 			for (String word: minus){
 				Set<String> urlSet = searchTerm(word);
 				newUrls.removeAll(urlSet);
 			}
 		}
 
-		if (sites != null) {
+						//System.out.println("URLs after minus: " + newUrls);
+
+
+		if (sites.size() != 0) {
 			Set<String> urlSet = new HashSet<String>();
 			for (String url: newUrls){
 				for (String site: sites){
@@ -104,7 +111,7 @@ public class WikiSearch {
 		}
 
 		for (String url: newUrls){
-			if (compulsory != null){
+			if (compulsory.size() != 0){
 				for (String term: compulsory){
 					if (!map.containsKey(url)){
 						map.put(url, index.tfidf(term, url));
@@ -113,7 +120,7 @@ public class WikiSearch {
 					}
 				}
 			}
-			if (optional != null){
+			if (optional.size() != 0){
 				for (String term: optional){
 					if (!map.containsKey(url)){
 						map.put(url, index.tfidf(term, url));
@@ -124,11 +131,14 @@ public class WikiSearch {
 			}
 		}
 
+
 		List<Entry<String, Double>> sortedEntries = sort(map);
-		List<String> res = new LinkedList<String>();
+
+		List<String> res = new ArrayList<String>();
 		for (Entry<String, Double> entry: sortedEntries){
 			res.add(entry.getKey());
 		}
+
 		return res;
 	}
 
@@ -138,7 +148,7 @@ public class WikiSearch {
 	 * @return List of entries with URL and relevance.
 	 */
 	public List<Entry<String, Double>> sort(Map<String, Double> map) {
-		List<Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(map.entrySet());
+		List<Entry<String, Double>> list = new ArrayList<Map.Entry<String, Double>>(map.entrySet());
 		Comparator<Entry<String, Double>> comparator = new Comparator<Entry<String, Double>>(){
 			public int compare(Entry<String, Double> one, Entry<String, Double> two){
 				return (two.getValue()).compareTo(one.getValue());
@@ -173,8 +183,5 @@ public class WikiSearch {
 
 		WikiSearch searcher = new WikiSearch();
 		List<String> result = searcher.search(test);
-		for (String elem: result){
-			System.out.println(elem);
-		}
 	}
 }

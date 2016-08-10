@@ -92,7 +92,6 @@ public class QueryParser {
 	}
 
 	public void processArguments(List<String> arguments) {
-		String[] options = {"a", "m", "s"};
 		String[] args = new String[arguments.size()];
 		for (int i = 0; i < arguments.size(); i++) {
 			args[i] = arguments.get(i);
@@ -100,7 +99,7 @@ public class QueryParser {
 		List<String> optionalWords = new ArrayList<String>();
 
 		OptionParser parser = new OptionParser();
-    OptionSpec<String> aCount = parser.accepts( "a" ).withRequiredArg().ofType( String.class );
+    OptionSpec<String> aCount = parser.accepts( "o" ).withRequiredArg().ofType( String.class );
     OptionSpec<String> mCount = parser.accepts( "m" ).withRequiredArg().ofType( String.class );
     OptionSpec<String> sCount = parser.accepts( "s" ).withRequiredArg().ofType( String.class );
     for (int i = 0; i < args.length; i++) {
@@ -110,10 +109,10 @@ public class QueryParser {
     }
 
     OptionSet set = parser.parse(args);
-    map.put("a", aCount.values(set));
+    map.put("o", aCount.values(set));
     map.put("m", mCount.values(set));
     map.put("s", sCount.values(set));
-    map.put("o", optionalWords);
+    map.put("a", optionalWords);
 	}
 
 	public boolean isStopWord(String word) {

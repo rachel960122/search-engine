@@ -5,39 +5,79 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Random;
+import java.util.Scanner;
+
+import java.io.IOException;
 
 public class AL extends Frame implements WindowListener,ActionListener {
     TextField inputTextbox = new TextField(20);
     TextArea outputTextbox =new TextArea(80,80);
     Button b;
+    Button c;
     QueryParser parser;
+    WikiSearch searcher;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         AL myWindow = new AL("Search");
         myWindow.setSize(900,900);
         myWindow.setVisible(true);
     }
 
-    public AL(String title) {
+    public AL(String title) throws IOException {
 
         super(title);
         setLayout(new FlowLayout());
         addWindowListener(this);
         b = new Button("Search...");
+        c = new Button("I Feel Lucky!");
         add(inputTextbox);
+        add(c);
         add(b);
         add(outputTextbox);
 
         b.addActionListener(this);
+         c.addActionListener(new ActionListener(){
+
+                    public void actionPerformed(ActionEvent e){
+
+                     try {
+
+                        inputTextbox.setText(RandomWord.randomWords());
+
+            } catch (FileNotFoundException e1) {
+
+
+        e1.printStackTrace();
+
+            }
+
+                   }
+
+                });
         parser = new QueryParser();
+        searcher = new WikiSearch();
     }
 
-    public String processQuery(List<String> listOfString) {
+    public String processResult(List<String> listOfString) {
         String outputString = "";
-        for(String a :listOfString) {
-            outputString = outputString + "\n" + a;
+        String hr = "-----------------------------------------------";
+        int count = 0;
+        if (listOfString.size() == 0) {
+            outputString += "No results found ╯' - ')╯";
+        } else {
+            outputString += "About " + listOfString.size() + " results\n";
         }
+        for (String a :listOfString) {
+            if (count > 200) break;
+            String[] fileContents = WikiFetcher.getFileContent(a);
+            outputString = outputString + "\n" + fileContents[0] + "\n" + a + "\n" + hr + "\n" + fileContents[1] + "\n\n";
+            count++;
+        }
+        System.out.println("printed out " + count + " results");
         return outputString;
     }
 
@@ -45,7 +85,8 @@ public class AL extends Frame implements WindowListener,ActionListener {
     public void actionPerformed(ActionEvent e) {
         String userInput = inputTextbox.getText();
         Map<String, List<String>> parsedInput = parser.processArgument(userInput);
-        outputTextbox.setText(parsedInput.toString());
+        List<String> results = searcher.search(parsedInput);
+        outputTextbox.setText(processResult(results));
     }
 
     public void textSeter(String textInput){
